@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import dj_database_url
 import os
@@ -41,7 +42,11 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 MY_APPS = [
-    # 'accounts',
+    'accounts',
+    'categories',
+    'adresses',
+    'properties',
+    'schedules',
 ]
 
 DJANGO_APPS = [
@@ -160,7 +165,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# AUTH_USER_MODEL = "accounts.Account"
+AUTH_USER_MODEL = "accounts.Account"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination", "PAGE_SIZE": 3,
@@ -171,4 +176,10 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "DE SÁ INCORPORAÇÕES",
     "DESCRIPTION": "API Rest de Sá Incorporações, para gerenciamento de lançamentos imobiliários, clientes e agendamentos de visitas.",
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
