@@ -25,8 +25,8 @@ class ScheduleSerializer(serializers.ModelSerializer):
             "id",
             "date",
             "hour",
-            "property"
-            "account"
+            "property",
+            "account",
             "account_id",
             "account_name",
             "account_phone",
