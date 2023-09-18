@@ -6,13 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 from .permissions import IsSuperuserOrOwner
-import os
-import smtplib
-from email.message import EmailMessage
-import ipdb
-from accounts.models import Account
-from properties.models import Property
-from datetime import datetime
+# import smtplib
+# from email.message import EmailMessage
+# from accounts.models import Account
+# from properties.models import Property
+# from datetime import datetime
 
 
 class ScheduleCreateView(CreateAPIView):
@@ -34,24 +32,28 @@ class ScheduleCreateView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+
         # Envio de email
-        client = Account.objects.filter(id=serializer.data['account'])
-        locality = Property.objects.filter(id=serializer.data['property'])
-        EMAIL_ADRESS = 'agendamento.desa@gmail.com'
-        EMAIL_PASSWORDS = 'mwzeqpfkytrvudqj'
-        msg = EmailMessage()
-        msg['Subject'] = 'Novo agendamento realizado'
-        msg['From'] = 'agendamento.desa@gmail.com'
-        msg['To'] = 'odairodriguez@yahoo.com.br'
-        day = datetime.strptime(
-            serializer.data['date'], '%Y-%m-%d').strftime("%d/%m/%Y")
-        msg.set_content(
-            f"Imóvel: {locality[0].enterprise} \nDia: {day} \nHorário: {serializer.data['hour']} \nCliente: {client[0].name} \nTelefone do Cliente: {client[0].phone} \nE-mail: {client[0].email}"
-        )
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(EMAIL_ADRESS, EMAIL_PASSWORDS)
-            smtp.send_message(msg)
+        # client = Account.objects.filter(id=serializer.data['account'])
+        # locality = Property.objects.filter(id=serializer.data['property'])
+        # EMAIL_ADRESS = 'agendamento.desa@gmail.com'
+        # EMAIL_PASSWORDS = 'mwzeqpfkytrvudqj'
+        # msg = EmailMessage()
+        # msg['Subject'] = 'Novo agendamento realizado'
+        # msg['From'] = 'agendamento.desa@gmail.com'
+        # msg['To'] = client[0].email
+        # if client[0].email != 'odairodriguez@yahoo.com.br':
+        #     msg['Bcc'] = 'odairodriguez@yahoo.com.br'
+        # day = datetime.strptime(
+        #     serializer.data['date'], '%Y-%m-%d').strftime("%d/%m/%Y")
+        # msg.set_content(
+        #     f"Imóvel: {locality[0].enterprise} \nDia: {day} \nHorário: {serializer.data['hour']} \nCliente: {client[0].name} \nTelefone do Cliente: {client[0].phone} \nE-mail: {client[0].email}"
+        # )
+        # with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        #     smtp.login(EMAIL_ADRESS, EMAIL_PASSWORDS)
+        #     smtp.send_message(msg)
         # Final do envio de email
+
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -101,21 +103,21 @@ class ScheduleDetailView(RetrieveUpdateDestroyAPIView):
             instance._prefetched_objects_cache = {}
 
         # Envio de email
-        client = Account.objects.filter(name=serializer.data['account'])
-        EMAIL_ADRESS = 'agendamento.desa@gmail.com'
-        EMAIL_PASSWORDS = 'mwzeqpfkytrvudqj'
-        msg = EmailMessage()
-        msg['Subject'] = 'Alteração de agendamento'
-        msg['From'] = 'agendamento.desa@gmail.com'
-        msg['To'] = 'odairodriguez@yahoo.com.br'
-        day = datetime.strptime(
-            serializer.data['date'], '%Y-%m-%d').strftime("%d/%m/%Y")
-        msg.set_content(
-            f"Imóvel: {serializer.data['property']} \nDia: {day} \nHorário: {serializer.data['hour']} \nCliente: {client[0].name} \nTelefone do Cliente: {client[0].phone} \nE-mail: {client[0].email}"
-        )
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(EMAIL_ADRESS, EMAIL_PASSWORDS)
-            smtp.send_message(msg)
+        # client = Account.objects.filter(name=serializer.data['account'])
+        # EMAIL_ADRESS = 'agendamento.desa@gmail.com'
+        # EMAIL_PASSWORDS = 'mwzeqpfkytrvudqj'
+        # msg = EmailMessage()
+        # msg['Subject'] = 'Alteração de agendamento'
+        # msg['From'] = 'agendamento.desa@gmail.com'
+        # msg['To'] = 'odairodriguez@yahoo.com.br'
+        # day = datetime.strptime(
+        #     serializer.data['date'], '%Y-%m-%d').strftime("%d/%m/%Y")
+        # msg.set_content(
+        #     f"Imóvel: {serializer.data['property']} \nDia: {day} \nHorário: {serializer.data['hour']} \nCliente: {client[0].name} \nTelefone do Cliente: {client[0].phone} \nE-mail: {client[0].email}"
+        # )
+        # with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        #     smtp.login(EMAIL_ADRESS, EMAIL_PASSWORDS)
+        #     smtp.send_message(msg)
         # Final do envio de email
 
         return Response(serializer.data)
@@ -124,23 +126,23 @@ class ScheduleDetailView(RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
 
         # Envio de email
-        client = Account.objects.filter(id=instance.account_id)
-        locality = Property.objects.filter(id=instance.property_id)
-        EMAIL_ADRESS = 'agendamento.desa@gmail.com'
-        EMAIL_PASSWORDS = 'mwzeqpfkytrvudqj'
-        msg = EmailMessage()
-        msg['Subject'] = 'Exclusão de agendamento'
-        msg['From'] = 'agendamento.desa@gmail.com'
-        msg['To'] = 'odairodriguez@yahoo.com.br'
-        currency_day = f"{instance.date}"
-        day = datetime.strptime(
-            currency_day, '%Y-%m-%d').strftime("%d/%m/%Y")
-        msg.set_content(
-            f"******************************************** \nO AGENDAMENTO ABAIXO FOI DELETADO ******************************************** \n\n Imóvel: {locality[0].enterprise} \nDia: {day} \nHorário: {instance.hour} \nCliente: {client[0].name} \nTelefone do Cliente: {client[0].phone} \nE-mail: {client[0].email} \n--------------------------------------------------------------------\nUsuário que realizou a exclusão: \n{request.user.name}"
-        )
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(EMAIL_ADRESS, EMAIL_PASSWORDS)
-            smtp.send_message(msg)
+        # client = Account.objects.filter(id=instance.account_id)
+        # locality = Property.objects.filter(id=instance.property_id)
+        # EMAIL_ADRESS = 'agendamento.desa@gmail.com'
+        # EMAIL_PASSWORDS = 'mwzeqpfkytrvudqj'
+        # msg = EmailMessage()
+        # msg['Subject'] = 'Exclusão de agendamento'
+        # msg['From'] = 'agendamento.desa@gmail.com'
+        # msg['To'] = 'odairodriguez@yahoo.com.br'
+        # currency_day = f"{instance.date}"
+        # day = datetime.strptime(
+        #     currency_day, '%Y-%m-%d').strftime("%d/%m/%Y")
+        # msg.set_content(
+        #     f"******************************************** \nO AGENDAMENTO ABAIXO FOI DELETADO ******************************************** \n\n Imóvel: {locality[0].enterprise} \nDia: {day} \nHorário: {instance.hour} \nCliente: {client[0].name} \nTelefone do Cliente: {client[0].phone} \nE-mail: {client[0].email} \n--------------------------------------------------------------------\nUsuário que realizou a exclusão: \n{request.user.name}"
+        # )
+        # with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        #     smtp.login(EMAIL_ADRESS, EMAIL_PASSWORDS)
+        #     smtp.send_message(msg)
         # Final do envio de email
 
         self.perform_destroy(instance)
